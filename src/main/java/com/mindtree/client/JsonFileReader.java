@@ -1,8 +1,13 @@
 package com.mindtree.client;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -13,10 +18,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+//import com.google.gson.Gson;
 import com.mindtree.model.Author;
 import com.mindtree.model.Book;
 import com.mindtree.service.InsertIntoDb;
 import com.mindtree.service.XMLServicesImpl;
+
 
 public class JsonFileReader {
 	public static void main(String args[]) throws SQLException {
@@ -24,7 +31,31 @@ public class JsonFileReader {
 		InsertIntoDb service = new InsertIntoDb();
 		Object obj;
 		try {
-			obj = parser.parse(new FileReader("book.json"));
+			String url="https://mocki.io/v1/b06f4eb6-e790-4d66-aed1-b5b4c25a930a";
+			URL obj1 = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj1.openConnection();
+			int responseCode = con.getResponseCode();
+			System.out.println("\n Sending 'GET' request to URL : "+url);
+			System.out.println("Response Code : " + responseCode);
+			
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			
+			String inputLine;
+		
+			
+			StringBuffer res = new StringBuffer();
+			
+			while ((inputLine = in.readLine()) != null) {
+				res.append(inputLine);
+			}
+
+			
+			String p = res.toString();
+//		
+			
+			
+			obj = parser.parse(p);
 			JSONArray jsonArray = (JSONArray) obj;
 			Iterator<JSONObject> bookObjects = jsonArray.iterator();
 			JSONObject jsonObject1;
